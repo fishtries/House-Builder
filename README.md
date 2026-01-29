@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Заявки с сайта → Telegram
+
+Данные из контактных форм (имя, телефон, email, согласия) сохраняются в `database/leads.json` и **сразу** отправляются в Telegram через API.
+
+1. **Установить зависимости**
+   ```bash
+   npm install
+   ```
+
+2. **Уведомления в Telegram**
+   - В корне проекта создайте `.env.local` (скопируйте из `.env.local.example`).
+   - Укажите `TELEGRAM_BOT_TOKEN` (от [@BotFather](https://t.me/BotFather)) и `TELEGRAM_CHAT_ID` (чат, куда слать уведомления).
+   - При отправке формы API сохраняет заявку и сразу шлёт сообщение в Telegram. Никакого вебхука и опроса БД — всё через API.
+
+3. **Хранение заявок**
+   - Заявки сохраняются в файл `database/leads.json`. Файл создаётся при первой отправке.
+
 ## Сборка и проверка сайта
 
 1. **Установить зависимости**

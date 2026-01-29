@@ -81,6 +81,7 @@ export default function Hero() {
       <ContactDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
+        source="hero"
         onSubmit={handleFormSubmit}
       />
     </section>

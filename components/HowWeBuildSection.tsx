@@ -135,6 +135,7 @@ export default function HowWeBuildSection() {
             <ContactDialog
               open={isDialogOpen}
               onOpenChange={setIsDialogOpen}
+              source="howwebuild"
               title="Проконсультироваться у специалиста"
               description="Оставьте свои контактные данные и наш специалист свяжется с вами для консультации"
               onSubmit={handleFormSubmit}

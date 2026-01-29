@@ -30,6 +30,8 @@ interface ContactDialogProps {
   onOpenChange: (open: boolean) => void;
   title?: string;
   description?: string;
+  /** Источник заявки для БД и Telegram (hero, mortgage, gallery, howwebuild и т.д.) */
+  source?: string;
   onSubmit?: (data: { name: string; phone: string; email: string }) => void;
 }
 
@@ -61,6 +63,7 @@ export default function ContactDialog({
   onOpenChange,
   title = "Рассчитать бюджет строительства",
   description = "Укажите свои данные и мы свяжемся с вами в рабочее время для обсуждения деталей",
+  source = "dialog",
   onSubmit,
 }: ContactDialogProps) {
   const [name, setName] = useState("");
@@ -70,6 +73,8 @@ export default function ContactDialog({
   const [agreed2, setAgreed2] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -102,7 +107,7 @@ export default function ContactDialog({
     return normalized.length >= 11; // 7 + 10 цифр
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const trimmedName = name.trim().slice(0, MAX_NAME_LENGTH);
@@ -110,6 +115,7 @@ export default function ContactDialog({
 
     setPhoneError("");
     setEmailError("");
+    setSubmitError("");
 
     if (!validatePhone(phone)) {
       setPhoneError("Введите корректный номер: 11 цифр (например, +7 999 123-45-67)");
@@ -120,20 +126,40 @@ export default function ContactDialog({
       return;
     }
 
-    if (onSubmit) {
-      onSubmit({ name: trimmedName, phone, email: trimmedEmail });
-    } else {
-      console.log({ name: trimmedName, phone, email: trimmedEmail, agreed1, agreed2 });
+    setSubmitLoading(true);
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: trimmedName,
+          phone,
+          email: trimmedEmail || undefined,
+          agreed_newsletter: agreed1,
+          agreed_personal_data: agreed2,
+          source,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitError(data.error || "Ошибка отправки. Попробуйте позже.");
+        setSubmitLoading(false);
+        return;
+      }
+      onSubmit?.({ name: trimmedName, phone, email: trimmedEmail });
+      onOpenChange(false);
+      setName("");
+      setPhone("");
+      setEmail("");
+      setAgreed1(false);
+      setAgreed2(false);
+      setEmailError("");
+      setPhoneError("");
+    } catch {
+      setSubmitError("Ошибка отправки. Проверьте интернет и попробуйте снова.");
+    } finally {
+      setSubmitLoading(false);
     }
-
-    onOpenChange(false);
-    setName("");
-    setPhone("");
-    setEmail("");
-    setAgreed1(false);
-    setAgreed2(false);
-    setEmailError("");
-    setPhoneError("");
   };
 
   return (
@@ -180,6 +206,9 @@ export default function ContactDialog({
               <p id="contact-phone-error" className="text-sm text-destructive">
                 {phoneError}
               </p>
+            )}
+            {submitError && (
+              <p className="text-sm text-destructive">{submitError}</p>
             )}
           </div>
 
@@ -238,9 +267,9 @@ export default function ContactDialog({
           <Button
             type="submit"
             className="w-full"
-            disabled={!agreed1 || !agreed2}
+            disabled={!agreed1 || !agreed2 || submitLoading}
           >
-            Отправить
+            {submitLoading ? "Отправка…" : "Отправить"}
           </Button>
         </form>
       </DialogContent>

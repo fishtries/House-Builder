@@ -38,6 +38,8 @@ function formatPhoneDisplay(raw: string): string {
   return out;
 }
 
+type SubmitStatus = "idle" | "loading" | "success" | "error";
+
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -46,6 +48,8 @@ export default function ContactForm() {
   const [agreed2, setAgreed2] = useState(false);
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
+  const [submitError, setSubmitError] = useState("");
 
   const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -77,12 +81,13 @@ export default function ContactForm() {
     return EMAIL_VALID_REGEX.test(value.trim()) && value.length <= MAX_EMAIL_LENGTH;
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim().slice(0, MAX_NAME_LENGTH);
     const trimmedEmail = email.trim().slice(0, MAX_EMAIL_LENGTH);
     setPhoneError("");
     setEmailError("");
+    setSubmitError("");
 
     if (!validatePhone(phone)) {
       setPhoneError("Введите корректный номер: 11 цифр (например, +7 999 123-45-67)");
@@ -92,12 +97,37 @@ export default function ContactForm() {
       setEmailError("Введите корректный адрес электронной почты");
       return;
     }
-    console.log({ name: trimmedName, phone, email: trimmedEmail, agreed1, agreed2 });
-    setName("");
-    setPhone("");
-    setEmail("");
-    setAgreed1(false);
-    setAgreed2(false);
+
+    setSubmitStatus("loading");
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: trimmedName,
+          phone,
+          email: trimmedEmail || undefined,
+          agreed_newsletter: agreed1,
+          agreed_personal_data: agreed2,
+          source: "form",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitStatus("error");
+        setSubmitError(data.error || "Ошибка отправки. Попробуйте позже.");
+        return;
+      }
+      setSubmitStatus("success");
+      setName("");
+      setPhone("");
+      setEmail("");
+      setAgreed1(false);
+      setAgreed2(false);
+    } catch {
+      setSubmitStatus("error");
+      setSubmitError("Ошибка отправки. Проверьте интернет и попробуйте снова.");
+    }
   };
 
   return (
@@ -192,12 +222,20 @@ export default function ContactForm() {
                 </div>
               </div>
 
+              {submitStatus === "success" && (
+                <p className="text-sm text-green-600">
+                  Спасибо! Заявка отправлена, мы свяжемся с вами.
+                </p>
+              )}
+              {submitStatus === "error" && submitError && (
+                <p className="text-sm text-destructive">{submitError}</p>
+              )}
               <Button
                 type="submit"
                 className="w-full"
-                disabled={!agreed1 || !agreed2}
+                disabled={!agreed1 || !agreed2 || submitStatus === "loading"}
               >
-                Отправить
+                {submitStatus === "loading" ? "Отправка…" : "Отправить"}
               </Button>
             </form>
           </CardContent>

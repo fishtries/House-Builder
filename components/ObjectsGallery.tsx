@@ -83,6 +83,7 @@ export default function ObjectsGallery() {
           <ContactDialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
+            source="gallery"
             title="Записаться на экскурсию"
             description="Напишите нам и мы организуем экскурсию на готовые или строящиеся объекты"
             onSubmit={handleFormSubmit}

@@ -83,6 +83,7 @@ export default function MortgageSection() {
                 <ContactDialog
                   open={isDialogOpen}
                   onOpenChange={setIsDialogOpen}
+                  source="mortgage"
                   title="Консультация специалиста по ипотеке"
                   description="Оставьте свои контактные данные и наш специалист свяжется с вами для консультации"
                   onSubmit={handleFormSubmit}
