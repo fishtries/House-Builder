@@ -135,9 +135,9 @@ export default function ContactForm() {
       <Container className="container px-4 md:px-6">
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Ждем вас в офисе</CardTitle>
+            <CardTitle className="text-2xl text-center">Ждем вас, блять, в офисе</CardTitle>
             <CardDescription className="text-center">
-              г. Краснодар ул. Красных Партизан, 117, 3й этаж, офис №313
+              г. Краснодар ул. Красых Партизан, 117, 3й этаж, офис №313
             </CardDescription>
           </CardHeader>
           <CardContent>
