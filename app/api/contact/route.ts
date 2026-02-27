@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase-server";
 
 export type ContactBody = {
   name: string;
@@ -44,31 +43,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: validated.error }, { status: 400 });
     }
 
-    const supabase = getSupabaseServer();
-    const { error } = await supabase.from("contacts").insert({
-      name: validated.data.name,
-      phone: validated.data.phone,
-      email: validated.data.email ?? null,
-      agreed_newsletter: validated.data.agreed_newsletter,
-      agreed_personal_data: validated.data.agreed_personal_data,
-    });
-
-    if (error) {
-      console.error("Supabase insert error:", error);
-      return NextResponse.json(
-        { error: "Failed to save contact" },
-        { status: 500 }
-      );
-    }
+    // At this point data is valid; Supabase integration was removed.
+    // You can plug in another storage (DB, email, etc.) here if needed.
+    console.log("New contact request:", validated.data);
 
     return NextResponse.json({ success: true });
   } catch (e) {
-    if (e instanceof Error && e.message.includes("Missing env")) {
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 503 }
-      );
-    }
     console.error("Contact API error:", e);
     return NextResponse.json(
       { error: "Internal server error" },
