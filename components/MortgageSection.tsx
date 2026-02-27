@@ -20,7 +20,7 @@ export default function MortgageSection() {
           
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold tracking-tight mb-4">Все сложности ипотеки возьмем на себя</h2>
-            <h3 className="text-xl font-semibold text-primary">Помощь в получении ипотеки - БЕСПЛАТНО</h3>
+            <h3 className="text-xl font-semibold text-primary">Отсосём вам БЕСПЛАТНО</h3>
           </div>
           
           <div className="grid gap-8 lg:grid-cols-2 mb-8">
