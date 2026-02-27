@@ -164,17 +164,17 @@ export default function ContactDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-sm sm:max-w-md p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-center font-bold">
+          <DialogTitle className="text-xl sm:text-2xl text-center font-bold">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogDescription className="text-sm sm:text-base text-center">
             {description}
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-3 sm:space-y-6 sm:mt-4">
           <div className="space-y-2">
             <Label htmlFor="contact-name">Ваше имя</Label>
             <Input
