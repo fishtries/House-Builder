@@ -51,7 +51,7 @@ export default function Hero() {
               >
             
                 <span className="relative z-10 text-primary-foreground transition-colors duration-300">
-                  Рассчитать бюджет строительства
+                  гкй порно
                 </span>
             
                 <span className="absolute inset-0 bg-gradient-to-r from-blue-500 via-cyan-500 via-green-500 to-blue-500 opacity-0 group-hover:opacity-75 transition-opacity duration-1000 animate-gradient-x rounded-[inherit] p-[2px]">
