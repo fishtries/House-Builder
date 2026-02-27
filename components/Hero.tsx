@@ -36,7 +36,7 @@ export default function Hero() {
           <div className="flex flex-col items-center space-y-8 text-center">
             <div className="space-y-10">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-foreground">
-                Строительство домов под ключ
+                Строительство дилдаков под ключ
               </h1>
               <p className="mx-auto max-w-[750px] text-xl text-muted-foreground md:text-2xl">
                Каменный или каркасный с коммуникациями и отделкой. Любой.
